@@ -7,9 +7,11 @@ import { Shield, Sword, Heart, Star } from 'lucide-react';
 
 interface CharacterSelectProps {
   onCharacterSelect: (character: Character) => void;
+  gameMode?: 'single' | 'multiplayer';
+  selectedCharacter?: Character | null;
 }
 
-const CHARACTERS: Omit<Character, 'x' | 'y' | 'currentHealth' | 'currentMana'>[] = [
+const CHARACTERS: Omit<Character, 'x' | 'y' | 'currentHealth' | 'currentMana' | 'gold' | 'items'>[] = [
   {
     id: 'warrior',
     name: 'Steel Guardian',
@@ -39,8 +41,8 @@ const CHARACTERS: Omit<Character, 'x' | 'y' | 'currentHealth' | 'currentMana'>[]
   }
 ];
 
-export const CharacterSelect = ({ onCharacterSelect }: CharacterSelectProps) => {
-  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
+export const CharacterSelect = ({ onCharacterSelect, gameMode = 'single', selectedCharacter: existingSelection }: CharacterSelectProps) => {
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
 
   const getRoleIcon = (role: Character['role']) => {
     switch (role) {
@@ -64,13 +66,15 @@ export const CharacterSelect = ({ onCharacterSelect }: CharacterSelectProps) => 
     }
   };
 
-  const handleSelect = (character: Omit<Character, 'x' | 'y' | 'currentHealth' | 'currentMana'>) => {
+  const handleSelect = (character: Omit<Character, 'x' | 'y' | 'currentHealth' | 'currentMana' | 'gold' | 'items'>) => {
     const fullCharacter: Character = {
       ...character,
       x: 100,
       y: 300,
       currentHealth: character.maxHealth,
-      currentMana: character.maxMana
+      currentMana: character.maxMana,
+      gold: 0,
+      items: []
     };
     onCharacterSelect(fullCharacter);
   };
@@ -92,9 +96,10 @@ export const CharacterSelect = ({ onCharacterSelect }: CharacterSelectProps) => 
             key={character.id}
             className={`
               p-6 cursor-pointer transition-all duration-300 hover:shadow-glow-primary
-              ${selectedCharacter === character.id ? 'ring-2 ring-primary shadow-glow-primary' : ''}
+              ${selectedCharacterId === character.id ? 'ring-2 ring-primary shadow-glow-primary' : ''}
+              ${existingSelection?.id === character.id ? 'ring-2 ring-gaming-blue opacity-50' : ''}
             `}
-            onClick={() => setSelectedCharacter(character.id)}
+            onClick={() => setSelectedCharacterId(character.id)}
           >
             <div className="text-center space-y-4">
               <div className={`
@@ -155,11 +160,11 @@ export const CharacterSelect = ({ onCharacterSelect }: CharacterSelectProps) => 
         ))}
       </div>
 
-      {selectedCharacter && (
+      {selectedCharacterId && (
         <div className="text-center">
           <Button 
             onClick={() => {
-              const character = CHARACTERS.find(c => c.id === selectedCharacter);
+              const character = CHARACTERS.find(c => c.id === selectedCharacterId);
               if (character) handleSelect(character);
             }}
             className="bg-gradient-primary hover:shadow-glow-primary px-8 py-3 text-lg font-semibold"

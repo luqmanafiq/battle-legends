@@ -6,11 +6,13 @@ import { Heart, Zap, Shield, Sword } from 'lucide-react';
 
 interface GameHUDProps {
   player: Character;
+  player2?: Character | null;
   ai: Character;
-  turn: 'player' | 'ai';
+  turn: 'player' | 'player2' | 'ai';
+  gameMode: 'single' | 'multiplayer';
 }
 
-export const GameHUD = ({ player, ai, turn }: GameHUDProps) => {
+export const GameHUD = ({ player, player2, ai, turn, gameMode }: GameHUDProps) => {
   const CharacterHUD = ({ character, isPlayer }: { character: Character; isPlayer: boolean }) => {
     const healthPercentage = (character.currentHealth / character.maxHealth) * 100;
     const manaPercentage = (character.currentMana / character.maxMana) * 100;
@@ -76,25 +78,43 @@ export const GameHUD = ({ player, ai, turn }: GameHUDProps) => {
     );
   };
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
+  if (gameMode === 'multiplayer') {
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        {/* Player 1 HUD */}
+        <div className="space-y-2">
           <Badge className={turn === 'player' ? 'bg-gaming-green' : 'bg-muted'}>
-            Player
+            Player 1
           </Badge>
-          {turn === 'player' && <Badge variant="outline" className="border-gaming-green text-gaming-green">Your Turn</Badge>}
+          <CharacterHUD character={player} isPlayer={true} />
         </div>
+
+        {/* Player 2 HUD */}
+        <div className="space-y-2">
+          <Badge className={turn === 'player2' ? 'bg-gaming-purple' : 'bg-muted'}>
+            Player 2
+          </Badge>
+          {player2 && <CharacterHUD character={player2} isPlayer={true} />}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      {/* Player HUD */}
+      <div className="space-y-2">
+        <Badge className={turn === 'player' ? 'bg-gaming-green' : 'bg-muted'}>
+          Player
+        </Badge>
         <CharacterHUD character={player} isPlayer={true} />
       </div>
 
+      {/* AI HUD */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Badge className={turn === 'ai' ? 'bg-gaming-red' : 'bg-muted'}>
-            Enemy
-          </Badge>
-          {turn === 'ai' && <Badge variant="outline" className="border-gaming-red text-gaming-red">Enemy Turn</Badge>}
-        </div>
+        <Badge className={turn === 'ai' ? 'bg-gaming-red' : 'bg-muted'}>
+          Enemy
+        </Badge>
         <CharacterHUD character={ai} isPlayer={false} />
       </div>
     </div>

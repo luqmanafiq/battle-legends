@@ -3,6 +3,7 @@ import { Character, GameStats } from '@/types/game';
 import { CharacterSelect } from './CharacterSelect';
 import { GameArena } from './GameArena';
 import { GameStatsComponent } from './GameStats';
+import { GameModeSelector } from './GameModeSelector';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,12 +11,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Trophy, Play, BarChart3, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-type GamePhase = 'menu' | 'character-select' | 'battle' | 'results';
+type GamePhase = 'menu' | 'mode-select' | 'character-select' | 'battle' | 'results';
 
 export const MobaGame = () => {
   const { toast } = useToast();
   const [gamePhase, setGamePhase] = useState<GamePhase>('menu');
+  const [gameMode, setGameMode] = useState<'single' | 'multiplayer'>('single');
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
+  const [selectedCharacter2, setSelectedCharacter2] = useState<Character | null>(null);
   const [gameStats, setGameStats] = useState<GameStats>({
     gamesPlayed: 0,
     gamesWon: 0,
@@ -28,13 +31,36 @@ export const MobaGame = () => {
     stats: any;
   } | null>(null);
 
-  const handleCharacterSelect = (character: Character) => {
-    setSelectedCharacter(character);
-    setGamePhase('battle');
-    toast({
-      title: "Character Selected!",
-      description: `${character.name} enters the arena`,
-    });
+  const handleModeSelect = (mode: 'single' | 'multiplayer') => {
+    setGameMode(mode);
+    setGamePhase('character-select');
+  };
+
+  const handleCharacterSelect = (character: Character, isPlayer2 = false) => {
+    // Add starting gold to character
+    const characterWithGold = { ...character, gold: 100, items: [] };
+    
+    if (gameMode === 'multiplayer' && !isPlayer2 && !selectedCharacter) {
+      setSelectedCharacter(characterWithGold);
+      toast({
+        title: "Player 1 Selected!",
+        description: `${character.name} joins the arena`,
+      });
+    } else if (gameMode === 'multiplayer' && isPlayer2) {
+      setSelectedCharacter2(characterWithGold);
+      setGamePhase('battle');
+      toast({
+        title: "Player 2 Selected!",
+        description: `${character.name} enters the arena. Let the battle begin!`,
+      });
+    } else {
+      setSelectedCharacter(characterWithGold);
+      setGamePhase('battle');
+      toast({
+        title: "Character Selected!",
+        description: `${character.name} enters the arena`,
+      });
+    }
   };
 
   const handleGameEnd = (winner: 'player' | 'ai', matchStats: any) => {
@@ -73,10 +99,10 @@ export const MobaGame = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
         <Card className="p-6 hover:shadow-glow-primary transition-all duration-300 cursor-pointer" 
-              onClick={() => setGamePhase('character-select')}>
+              onClick={() => setGamePhase('mode-select')}>
           <Play className="w-12 h-12 mx-auto mb-4 text-gaming-green" />
           <h3 className="text-xl font-semibold mb-2">Start Battle</h3>
-          <p className="text-muted-foreground">Choose your champion and enter combat</p>
+          <p className="text-muted-foreground">Choose game mode and enter combat</p>
         </Card>
 
         <Card className="p-6 hover:shadow-glow-secondary transition-all duration-300">
@@ -94,16 +120,16 @@ export const MobaGame = () => {
         <h2 className="text-2xl font-bold mb-4">Game Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="p-4">
-            <h4 className="font-semibold text-gaming-blue mb-2">Real-time Combat</h4>
-            <p className="text-sm text-muted-foreground">Turn-based strategic battles with damage calculations</p>
+            <h4 className="font-semibold text-gaming-blue mb-2">Strategic Combat</h4>
+            <p className="text-sm text-muted-foreground">Turn-based battles with items and equipment</p>
           </Card>
           <Card className="p-4">
-            <h4 className="font-semibold text-gaming-purple mb-2">Character Roles</h4>
-            <p className="text-sm text-muted-foreground">Tank, DPS, and Support classes with unique abilities</p>
+            <h4 className="font-semibold text-gaming-purple mb-2">Item Shop System</h4>
+            <p className="text-sm text-muted-foreground">Buy weapons, armor, and consumables with gold</p>
           </Card>
           <Card className="p-4">
-            <h4 className="font-semibold text-gaming-pink mb-2">Analytics Dashboard</h4>
-            <p className="text-sm text-muted-foreground">Performance tracking and battle statistics</p>
+            <h4 className="font-semibold text-gaming-pink mb-2">Multiplayer Mode</h4>
+            <p className="text-sm text-muted-foreground">Local multiplayer battles and analytics tracking</p>
           </Card>
         </div>
       </div>
@@ -183,19 +209,40 @@ export const MobaGame = () => {
           </Tabs>
         )}
 
+        {gamePhase === 'mode-select' && (
+          <GameModeSelector 
+            onModeSelect={handleModeSelect}
+            onBack={() => setGamePhase('menu')}
+          />
+        )}
+
         {gamePhase === 'character-select' && (
           <div>
             <div className="mb-6">
               <Button 
                 variant="outline" 
-                onClick={() => setGamePhase('menu')}
+                onClick={() => setGamePhase('mode-select')}
                 className="border-gaming-blue text-gaming-blue hover:bg-gaming-blue/10"
               >
                 <Home className="w-4 h-4 mr-2" />
-                Back to Menu
+                Back to Mode Select
               </Button>
             </div>
-            <CharacterSelect onCharacterSelect={handleCharacterSelect} />
+            
+            {gameMode === 'multiplayer' && (
+              <div className="mb-4 text-center">
+                <Badge className="bg-gaming-purple">
+                  {!selectedCharacter ? "Player 1 - Choose Your Character" : 
+                   !selectedCharacter2 ? "Player 2 - Choose Your Character" : "Ready to Battle!"}
+                </Badge>
+              </div>
+            )}
+            
+            <CharacterSelect 
+              onCharacterSelect={(char) => handleCharacterSelect(char, gameMode === 'multiplayer' && !!selectedCharacter)}
+              gameMode={gameMode}
+              selectedCharacter={selectedCharacter}
+            />
           </div>
         )}
 
@@ -211,7 +258,9 @@ export const MobaGame = () => {
               </Button>
             </div>
             <GameArena 
-              selectedCharacter={selectedCharacter} 
+              selectedCharacter={selectedCharacter}
+              selectedCharacter2={selectedCharacter2}
+              gameMode={gameMode}
               onGameEnd={handleGameEnd}
             />
           </div>

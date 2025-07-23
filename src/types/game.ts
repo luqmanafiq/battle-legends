@@ -1,3 +1,17 @@
+export interface Item {
+  id: string;
+  name: string;
+  cost: number;
+  stats: {
+    attack?: number;
+    defense?: number;
+    health?: number;
+    mana?: number;
+  };
+  description: string;
+  icon: string;
+}
+
 export interface Character {
   id: string;
   name: string;
@@ -10,14 +24,19 @@ export interface Character {
   defense: number;
   x: number;
   y: number;
+  gold: number;
+  items: Item[];
 }
 
 export interface GameState {
   player: Character | null;
+  player2?: Character | null; // For local multiplayer
   ai: Character;
   gamePhase: 'setup' | 'combat' | 'ended';
-  turn: 'player' | 'ai';
+  turn: 'player' | 'player2' | 'ai';
   actionLog: string[];
+  gameMode: 'single' | 'multiplayer';
+  shopOpen: boolean;
 }
 
 export interface GameStats {
