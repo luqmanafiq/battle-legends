@@ -16,52 +16,90 @@ interface ItemShopProps {
 
 const SHOP_ITEMS: Item[] = [
   {
-    id: 'iron-sword',
+    id: 'sword',
     name: 'Iron Sword',
     cost: 50,
+    type: 'equipment',
     stats: { attack: 15 },
-    description: 'Increases attack power by 15',
+    description: 'A sturdy iron blade that increases attack power',
     icon: '⚔️'
   },
   {
-    id: 'steel-armor',
-    name: 'Steel Armor',
-    cost: 75,
+    id: 'armor',
+    name: 'Chain Mail',
+    cost: 60,
+    type: 'equipment',
     stats: { defense: 12 },
-    description: 'Increases defense by 12',
+    description: 'Protective chain mail that reduces incoming damage',
     icon: '🛡️'
+  },
+  {
+    id: 'critical-blade',
+    name: 'Critical Blade',
+    cost: 90,
+    type: 'equipment',
+    stats: { attack: 10, criticalChance: 25 },
+    description: 'A razor-sharp blade with high critical hit chance',
+    icon: '🗡️'
   },
   {
     id: 'health-potion',
     name: 'Health Potion',
-    cost: 30,
-    stats: { health: 40 },
-    description: 'Restores 40 health points',
+    cost: 25,
+    type: 'consumable',
+    stats: {},
+    effects: { heal: 50 },
+    description: 'Instantly restores 50 health when used',
     icon: '🧪'
   },
   {
-    id: 'mana-crystal',
-    name: 'Mana Crystal',
+    id: 'mana-potion',
+    name: 'Mana Potion',
+    cost: 20,
+    type: 'consumable',
+    stats: {},
+    effects: { manaRestore: 40 },
+    description: 'Instantly restores 40 mana when used',
+    icon: '🔮'
+  },
+  {
+    id: 'poison-vial',
+    name: 'Poison Vial',
     cost: 35,
-    stats: { mana: 30 },
-    description: 'Restores 30 mana points',
+    type: 'consumable',
+    stats: {},
+    effects: { 
+      statusEffect: { type: 'poison', duration: 3, value: 10 }
+    },
+    description: 'Applies poison to your next attack (10 damage per turn for 3 turns)',
+    icon: '🧪'
+  },
+  {
+    id: 'crystal',
+    name: 'Mana Crystal',
+    cost: 30,
+    type: 'equipment',
+    stats: { mana: 40 },
+    description: 'Increases maximum mana capacity',
     icon: '💎'
   },
   {
-    id: 'legendary-blade',
-    name: 'Legendary Blade',
-    cost: 150,
-    stats: { attack: 35, defense: 5 },
-    description: 'Powerful weapon with +35 attack and +5 defense',
-    icon: '🗡️'
+    id: 'ring',
+    name: 'Power Ring',
+    cost: 80,
+    type: 'equipment',
+    stats: { attack: 10, defense: 8 },
+    description: 'A magical ring that enhances both offense and defense',
+    icon: '💍'
   },
   {
-    id: 'mystic-armor',
-    name: 'Mystic Armor',
-    cost: 200,
-    stats: { defense: 25, health: 20 },
-    description: 'Enchanted armor with +25 defense and +20 health',
-    icon: '🛡️'
+    id: 'boots',
+    name: 'Swift Boots',
+    cost: 40,
+    type: 'equipment',
+    stats: { health: 20, mana: 20 },
+    description: 'Lightweight boots that boost vitality',
+    icon: '👢'
   }
 ];
 

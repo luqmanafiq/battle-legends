@@ -43,10 +43,22 @@ export const GameArena = ({ selectedCharacter, selectedCharacter2, gameMode, onG
       currentMana: 80,
       attack: 25,
       defense: 15,
+      criticalChance: 15,
       x: 700,
       y: 300,
       gold: 0,
-      items: []
+      items: [],
+      abilities: [
+        {
+          id: 'shadow-strike',
+          name: 'Shadow Strike',
+          manaCost: 25,
+          damage: 30,
+          description: 'Dark energy attack',
+          icon: '🌑'
+        }
+      ],
+      statusEffects: []
     } : {
       id: 'ai-dummy',
       name: 'Training Dummy',
@@ -57,10 +69,13 @@ export const GameArena = ({ selectedCharacter, selectedCharacter2, gameMode, onG
       currentMana: 0,
       attack: 0,
       defense: 0,
+      criticalChance: 0,
       x: 700,
       y: 300,
       gold: 0,
-      items: []
+      items: [],
+      abilities: [],
+      statusEffects: []
     },
     gamePhase: 'combat',
     turn: 'player',

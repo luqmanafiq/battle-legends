@@ -2,12 +2,36 @@ export interface Item {
   id: string;
   name: string;
   cost: number;
+  type: 'equipment' | 'consumable';
   stats: {
     attack?: number;
     defense?: number;
     health?: number;
     mana?: number;
+    criticalChance?: number;
   };
+  effects?: {
+    heal?: number;
+    manaRestore?: number;
+    statusEffect?: StatusEffect;
+  };
+  description: string;
+  icon: string;
+}
+
+export interface StatusEffect {
+  type: 'poison' | 'burn' | 'freeze' | 'strength' | 'shield';
+  duration: number;
+  value: number;
+}
+
+export interface Ability {
+  id: string;
+  name: string;
+  manaCost: number;
+  damage?: number;
+  heal?: number;
+  statusEffect?: StatusEffect;
   description: string;
   icon: string;
 }
@@ -22,10 +46,13 @@ export interface Character {
   currentMana: number;
   attack: number;
   defense: number;
+  criticalChance: number;
   x: number;
   y: number;
   gold: number;
   items: Item[];
+  abilities: Ability[];
+  statusEffects: StatusEffect[];
 }
 
 export interface GameState {

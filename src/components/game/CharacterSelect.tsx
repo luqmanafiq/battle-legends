@@ -19,7 +19,29 @@ const CHARACTERS: Omit<Character, 'x' | 'y' | 'currentHealth' | 'currentMana' | 
     maxHealth: 150,
     maxMana: 60,
     attack: 20,
-    defense: 25
+    defense: 25,
+    criticalChance: 10,
+    abilities: [
+      {
+        id: 'shield-bash',
+        name: 'Shield Bash',
+        manaCost: 20,
+        damage: 25,
+        statusEffect: { type: 'freeze', duration: 1, value: 0 },
+        description: 'Stuns enemy for 1 turn',
+        icon: '🛡️'
+      },
+      {
+        id: 'defensive-stance',
+        name: 'Defensive Stance',
+        manaCost: 15,
+        heal: 30,
+        statusEffect: { type: 'shield', duration: 2, value: 10 },
+        description: 'Heals and reduces damage taken',
+        icon: '🛡️'
+      }
+    ],
+    statusEffects: []
   },
   {
     id: 'assassin',
@@ -28,7 +50,28 @@ const CHARACTERS: Omit<Character, 'x' | 'y' | 'currentHealth' | 'currentMana' | 
     maxHealth: 80,
     maxMana: 100,
     attack: 35,
-    defense: 10
+    defense: 10,
+    criticalChance: 35,
+    abilities: [
+      {
+        id: 'backstab',
+        name: 'Backstab',
+        manaCost: 25,
+        damage: 45,
+        description: 'High damage critical strike',
+        icon: '🗡️'
+      },
+      {
+        id: 'poison-blade',
+        name: 'Poison Blade',
+        manaCost: 20,
+        damage: 20,
+        statusEffect: { type: 'poison', duration: 3, value: 10 },
+        description: 'Applies poison for 3 turns',
+        icon: '☠️'
+      }
+    ],
+    statusEffects: []
   },
   {
     id: 'healer',
@@ -37,7 +80,28 @@ const CHARACTERS: Omit<Character, 'x' | 'y' | 'currentHealth' | 'currentMana' | 
     maxHealth: 100,
     maxMana: 120,
     attack: 15,
-    defense: 18
+    defense: 18,
+    criticalChance: 20,
+    abilities: [
+      {
+        id: 'fireball',
+        name: 'Fireball',
+        manaCost: 30,
+        damage: 35,
+        statusEffect: { type: 'burn', duration: 2, value: 15 },
+        description: 'Burns enemy for 2 turns',
+        icon: '🔥'
+      },
+      {
+        id: 'heal',
+        name: 'Healing Light',
+        manaCost: 25,
+        heal: 50,
+        description: 'Restores health',
+        icon: '✨'
+      }
+    ],
+    statusEffects: []
   }
 ];
 
